@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1069309175593",
+    "firebase_url": "https://gomuluproject-default-rtdb.firebaseio.com",
+    "project_id": "gomuluproject",
+    "storage_bucket": "gomuluproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069309175593:android:89c306622884fb0dd83938",
+        "android_client_info": {
+          "package_name": "com.example.untitled1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ8GlRK88mX-1VI6mDwE1hXWCXu0RfEMU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
