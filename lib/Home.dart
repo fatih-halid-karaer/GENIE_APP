@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'package:untitled1/BluetoothPage.dart';
+import 'package:untitled1/MQTT.dart';
 import 'package:untitled1/Stt.dart';
+import 'package:untitled1/api.dart';
+import 'package:untitled1/spotify.dart';
 
 class Main extends StatefulWidget {
   const Main({super.key});
@@ -13,8 +15,10 @@ class Main extends StatefulWidget {
 class _HomePageState extends State<Main> {
   final SpeechToText _speechToText = SpeechToText();
   final List<Widget> _pages = [
-   BluetoothPage(),
+   MQTTPage(),
    Stt(),
+    Spotify(),
+    MyApi(),
 
   ];
   bool _speechEnabled = false;
@@ -133,6 +137,14 @@ class _HomePageState extends State<Main> {
                         IconButton(
                           onPressed: () => _changePage(1),
                           icon: Icon(Icons.mic, size: 24, color: Colors.white),
+                        ),
+                        IconButton(
+                          onPressed: () => _changePage(2),
+                          icon: Icon(Icons.music_note, size: 24, color: Colors.white),
+                        ),
+                        IconButton(
+                          onPressed: () => _changePage(3),
+                          icon: Icon(Icons.api, size: 24, color: Colors.white),
                         ),
                       ],
                     ),
