@@ -11,14 +11,15 @@ class MyApi extends StatefulWidget {
 
 class _MyApiState extends State<MyApi> {
   final String api_key = "aa972770df9b6a6cec4bc08bb7db363d91413f1229423755caf9819dd7be77e8";
-  final String apiUrl = 'http://192.168.1.101:8000/';
+  final String apiUrl = 'http://192.168.1.104:8000/';
   Map<String,dynamic> _m = {};
-  List<Map<String,dynamic>> _list1 = [];
-  List<Map<String,dynamic>> _list2 = [];
+  Map<String,dynamic> _m1 = {};
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _serverStatus();
    _readRequest(1);
   }
   @override
@@ -57,7 +58,10 @@ class _MyApiState extends State<MyApi> {
                       title: Text('TEXT 2'),
                       subtitle: Text(_m.values.elementAt(1)),
                     ),
-
+                    ListTile(
+                      title: Text('Server Status'),
+                      subtitle: Text(_m1.values.elementAt(0)),
+                    ),
 
                   ],
                 ),
@@ -67,6 +71,33 @@ class _MyApiState extends State<MyApi> {
         ),
       ),
     );
+  }Future<void> _serverStatus() async {
+    final String query_add = "server_status";
+    try{
+      final response = await http.get(
+        Uri.parse(apiUrl + query_add),
+        headers: {
+          'Content-Type': 'application/json',
+          'api_key': '$api_key',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          String responseBody = utf8.decode(response.bodyBytes);
+          _m1 = jsonDecode(responseBody);
+          print(_m1);
+        });
+      } else {
+        setState(() {
+          String responseBody = utf8.decode(response.bodyBytes);
+          _m1 = jsonDecode(responseBody);
+          print(_m1);
+        });
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
   }
   Future<void> _readRequest(int n) async {
     final String query_add = "read_request?value=$n&by=_id";
