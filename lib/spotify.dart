@@ -94,7 +94,7 @@ class _SpotifyState extends State<Spotify> {
                 _searchSpotify(authToken);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green, // Buton metninin rengi
+                backgroundColor: Color(0xFF7573C6), // Buton metninin rengi
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20), // Butonun kenar yuvarlaklığı
                 ),
