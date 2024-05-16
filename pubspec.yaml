@@ -56,6 +56,7 @@ dependencies:
   record: ^5.0.5
   flutter_circle_color_picker: ^0.3.0
   syncfusion_flutter_charts: ^25.2.4
+  flutter_color_models: ^1.3.3+2
 
 dev_dependencies:
   flutter_test:

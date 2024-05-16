@@ -3,6 +3,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
+import 'package:flutter_color_models/flutter_color_models.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:untitled1/MQTT.dart';
 import 'package:untitled1/ProfilePage.dart';
@@ -19,7 +20,7 @@ class Main extends StatefulWidget {
 }
 
 class _HomePageState extends State<Main> {
-  var text = "Hold the button and start speaking";
+  var text = "";
   var isListening = false;
   Color bgColor = const Color(0xFF7573C6);
   var auth = 'Basic '+base64Encode(utf8.encode('genie:Alaaddin123'));
@@ -69,11 +70,12 @@ class _HomePageState extends State<Main> {
   Color _currentColor = Colors.blue;
   Color _currentColor2 = Colors.blue;
   Color _currentColor3 = Colors.blue;
-
+  String _url = "";
   final String api_key = "aa972770df9b6a6cec4bc08bb7db363d91413f1229423755caf9819dd7be77e8";
   final String apiUrl = 'https://imp-funny-jennet.ngrok-free.app/';
   double brightnessValue = 50;
   double velocityValue = 0.5;
+  double _d = 0;
   void _handleMessage(String message) {
     setState(() {
       receivedMessage = message;
@@ -97,6 +99,9 @@ class _HomePageState extends State<Main> {
   }
   void _updateValues() {
     mqttService.publish(_currentColor.red, _currentColor.green,_currentColor.blue, _currentColor2.red, _currentColor2.green,_currentColor2.blue, _currentColor3.red, _currentColor3.green, _currentColor3.blue, brightnessValue, velocityValue, _animationValue);
+    setState(() {
+
+    });
   }
   void checkMicrophoneAvailability() async {
     bool available = await speechToText.initialize();
@@ -145,7 +150,7 @@ class _HomePageState extends State<Main> {
   Future<void> _launchURL(String url) async {
     try {
       // URL launching code
-      await launch('url');
+      await launch(url);
     } catch (e) {
       print('Error launching URL: $e');
       // Handle the error as needed
@@ -168,6 +173,18 @@ class _HomePageState extends State<Main> {
           String responseBody = utf8.decode(response.bodyBytes);
           _m = jsonDecode(responseBody);
           print(_m);
+          print(_m.values.elementAt(5));
+          _controller.color = RgbColor(_m.values.elementAt(1)[0][0],_m.values.elementAt(1)[0][1], _m.values.elementAt(1)[0][2]);
+          _controller2.color = RgbColor(_m.values.elementAt(1)[1][0],_m.values.elementAt(1)[1][1], _m.values.elementAt(1)[1][2]);
+          _controller3.color = RgbColor(_m.values.elementAt(1)[2][0],_m.values.elementAt(1)[2][1], _m.values.elementAt(1)[2][2]);
+          _currentColor = RgbColor(_m.values.elementAt(1)[0][0],_m.values.elementAt(1)[0][1], _m.values.elementAt(1)[0][2]);
+          _currentColor2 = RgbColor(_m.values.elementAt(1)[1][0],_m.values.elementAt(1)[1][1], _m.values.elementAt(1)[1][2]);
+          _currentColor3 = RgbColor(_m.values.elementAt(1)[2][0],_m.values.elementAt(1)[2][1], _m.values.elementAt(1)[2][2]);
+
+          brightnessValue = _m.values.elementAt(2).toDouble();
+          velocityValue = _m.values.elementAt(3);
+          _animationValue = _m.values.elementAt(4);
+          _url =  _m.values.elementAt(5);
         });
       } else {
         setState(() {
@@ -180,7 +197,18 @@ class _HomePageState extends State<Main> {
       print("Error: $e");
     }
   }
-
+  double? _doubleMaker(String text) {
+    RegExp regExp = RegExp(r"[-+]?[0-9]*\.?[0-9]+");
+    if (regExp.hasMatch(text)) {
+      Match? match = regExp.firstMatch(text);
+      if (match != null) {
+        double result = double.parse(match.group(0)!);
+        return result;
+      }
+    } else {
+      return 0;
+    }
+  }
 
   void _changePage(int index) {
     Navigator.push(
@@ -199,13 +227,28 @@ class _HomePageState extends State<Main> {
             Image.asset('assets/logogen.jpg', width: 70, height: 70),
           ],
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              if(_m.isNotEmpty)
-              {_launchURL(_m.values.elementAt(5));}
-            },
-            icon: Icon(Icons.launch,color: Colors.white,),
+        actions: <Widget>[
+          Row(
+            children: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.equalizer, color: Colors.white,),
+                onPressed: () {
+                  setState(() {
+                    _controller2.color = _currentColor;
+                    _controller3.color = _currentColor;
+                    _currentColor2 = _currentColor;
+                    _currentColor3 = _currentColor;
+                  });
+                },
+              ),
+              IconButton(
+                onPressed: () {
+
+                  _launchURL(_url);
+                },
+                icon: Icon(Icons.launch,color: Colors.white,),
+              ),
+            ],
           ),
         ],
       ),
@@ -237,7 +280,7 @@ class _HomePageState extends State<Main> {
                         width: 190,
                         height: 200,
                         child: CircleColorPicker(
-                           // Sabit yükseklik
+                           // Sabit yüksekli
                           controller: _controller2,
                           onChanged: (color) {
                             setState(() => _currentColor2 = color);
@@ -256,7 +299,7 @@ class _HomePageState extends State<Main> {
 
                   SizedBox(
                     height: 200,
-                    width: 200,
+                    width: 190,
                     child: CircleColorPicker(
 
                       controller: _controller3,
@@ -266,62 +309,30 @@ class _HomePageState extends State<Main> {
                       },
                       ),
                     ),
+                  SizedBox(
+                    height: 180,
+                    width: 190,
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle, // Dairesel şekil
+                        border: Border.all(color: Color(0xFF7573C6)),
+                        color: bgColor,
+                      ),
+                      child: Center(
+                        child: Text(
+                          receivedMessage == null ?   'Bekleniyor...'  : '${_doubleMaker(receivedMessage!)} °C' ,
+                          style: TextStyle(fontSize: 22, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+
 
 
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                        setState(() {
-                        _controller2.color = _currentColor;
-                        _controller3.color = _currentColor;
-                        _currentColor2 = _currentColor;
-                        _currentColor3 = _currentColor;
-                        });
-                    }, icon: Icon(Icons.equalizer, color: bgColor,)
-                   
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
 
-                      Text('Red1: ${_currentColor.red}', style: TextStyle(color: Colors.red)),
-                      SizedBox(width: 20),
-                      Text('Green1: ${_currentColor.green}', style: TextStyle(color: Colors.green)),
-                      SizedBox(width: 20),
-                      Text('Blue1: ${_currentColor.blue}', style: TextStyle(color: Colors.blue)),
-
-                    ],
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-
-                      Text('Red2: ${_currentColor2.red}', style: TextStyle(color: Colors.red)),
-                      SizedBox(width: 20),
-                      Text('Green2: ${_currentColor2.green}', style: TextStyle(color: Colors.green)),
-                      SizedBox(width: 20),
-                      Text('Blue2: ${_currentColor2.blue}', style: TextStyle(color: Colors.blue)),
-
-                    ],
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-
-                      Text('Red3: ${_currentColor3.red}', style: TextStyle(color: Colors.red)),
-                      SizedBox(width: 20),
-                      Text('Green3: ${_currentColor3.green}', style: TextStyle(color: Colors.green)),
-                      SizedBox(width: 20),
-                      Text('Blue3: ${_currentColor3.blue}', style: TextStyle(color: Colors.blue)),
-
-                    ],
-                  ),
-                ],
-              ),
               const SizedBox(height: 30),
               Stack(
                 children: [
@@ -346,7 +357,7 @@ class _HomePageState extends State<Main> {
                             child: Slider(
                               value: brightnessValue,
                               min: 0,
-                              max: 100,
+                              max: 255,
                               onChanged: (value) {
                                 setState(() {
                                   brightnessValue = value;
@@ -357,13 +368,14 @@ class _HomePageState extends State<Main> {
                             ),
                           ),
                           ),
+                          Text('Brightness: ${brightnessValue.toStringAsFixed(2)}'),
                         ],
                       ),
                     ),
                   ),
                 ],
               ),
-                  Text('Brightness: ${brightnessValue.toStringAsFixed(2)}'),
+
               const SizedBox(height: 10),
               Stack(
                 children: [
@@ -398,6 +410,7 @@ class _HomePageState extends State<Main> {
                             ),
                           ),
                           ),
+                          Text('Velocity: ${velocityValue.toStringAsFixed(2)}'),
                         ],
                       ),
                     ),
@@ -405,7 +418,7 @@ class _HomePageState extends State<Main> {
                 ],
               ),
 
-              Text('Velocity: ${velocityValue.toStringAsFixed(2)}'),
+
               const SizedBox(height: 10,),
               Stack(
                 children: [
@@ -443,24 +456,14 @@ class _HomePageState extends State<Main> {
                       ),
                     ),
                     ),
+                    Text('Animation: $_animationName'),
                   ],
                 ),
               ),
                 ),]),
-              Text('Animation: $_animationName'),
+
             const SizedBox(height: 15),
 
-                   Container(
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFF7573C6)),
-                      ),
-                      child: Text(
-                        receivedMessage ?? 'Bekleniyor...',
-                        style: TextStyle(fontSize: 20),
-                      ),
-
-                        ),
 
               const SizedBox(height: 20),
 
@@ -469,6 +472,7 @@ class _HomePageState extends State<Main> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 15.0),
               ),
+             SizedBox(height: 15,),
 
             ],
           ),
@@ -514,32 +518,6 @@ class _HomePageState extends State<Main> {
                       text = result.recognizedWords;
                       if (text.toLowerCase().contains('model')) {
                         _modelResponse(text);
-                        if(_m.isNotEmpty) {
-                          switch(_m.values.elementAt(1).length) {
-                            case 1:
-                              _controller.color = _m.values.elementAt(1)[0];
-                             _currentColor = _m.values.elementAt(1)[0];
-                             break;
-                            case 2:
-                              _controller.color = _m.values.elementAt(1)[0];
-                              _controller2.color = _m.values.elementAt(1)[1];
-                              _currentColor = _m.values.elementAt(1)[0];
-                              _currentColor2 = _m.values.elementAt(1)[1];
-                              break;
-                            default:
-                              _controller.color = _m.values.elementAt(1)[0];
-                              _controller2.color = _m.values.elementAt(1)[1];
-                              _controller3.color = _m.values.elementAt(1)[2];
-                              _currentColor = _m.values.elementAt(1)[0];
-                              _currentColor2 = _m.values.elementAt(1)[1];
-                              _currentColor3 = _m.values.elementAt(1)[2];
-                              break;
-                          }
-                          brightnessValue = _m.values.elementAt(2);
-                          velocityValue = _m.values.elementAt(3);
-                          _animationValue = _m.values.elementAt(4);
-                        }
-
                       }
                       if(text.toLowerCase().contains('bir')){
                         _controller2.color = _currentColor;

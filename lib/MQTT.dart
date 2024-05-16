@@ -51,7 +51,7 @@ class MQTTService {
     _onMessageReceived = onMessageReceived;
   }
   void publish(int red1, int green1, int blue1, int red2, int green2, int blue2,int red3, int green3, int blue3, double brightness, double velocity, int animationValue) {
-    var message1 = '$brightness,';
+    var message1 = '${brightness.toInt()},';
     var message2 = '$velocity,';
     var message3 = '$animationValue,';
     var message4 =  '$red1,$green1,$blue1,$red2,$green2,$blue2,$red3,$green3,$blue3';
