@@ -461,18 +461,11 @@ class _HomePageState extends State<Main> {
                 ),
               ),
                 ),]),
-
-            const SizedBox(height: 15),
-
-
-              const SizedBox(height: 20),
-
               Text(
                 text,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 15.0),
               ),
-             SizedBox(height: 15,),
 
             ],
           ),
