@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 class SpotifyService {
-  final String clientId = 'f09569bc1fa24bc1a4521005aeeb7a7b';
-  final String clientSecret = '59ce8d4c8ac44c4f9ec705f433830f1c';
+  final String clientId = 'CLIENT_ID';
+  final String clientSecret = 'CLIENT_SECRET';
 
   Future<String> getAuthToken() async {
     final String basicAuth = 'Basic ' + base64Encode(utf8.encode('$clientId:$clientSecret'));
