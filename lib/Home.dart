@@ -23,7 +23,7 @@ class _HomePageState extends State<Main> {
   var text = "";
   var isListening = false;
   Color bgColor = const Color(0xFF7573C6);
-  var auth = 'Basic ' + base64Encode(utf8.encode('genie:Alaaddin123'));
+  var auth = 'Basic ' + base64Encode(utf8.encode('KEY:VALUE'));
   int _animationValue = 0;
   String _animationName = 'No Effect';
   SpeechToText speechToText = SpeechToText();
@@ -78,7 +78,7 @@ class _HomePageState extends State<Main> {
   // startPlayback(spotifyService, 'spotify:playlist:YOUR_PLAYLIST_URI');
 
   String? accessToken;
-  final String api_key = "aa972770df9b6a6cec4bc08bb7db363d91413f1229423755caf9819dd7be77e8";
+  final String api_key = "API_KEY";
   final String apiUrl = 'https://imp-funny-jennet.ngrok-free.app/';
   double brightnessValue = 50;
   double velocityValue = 0.5;
